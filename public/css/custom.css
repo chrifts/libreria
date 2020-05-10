@@ -1,0 +1,54 @@
+.theImg {
+    width: 150px; 
+}
+.theTitle {
+    width: 208px;
+    position: relative;
+    top: 15px;
+}
+
+.theCard {
+    background: #fff;
+    display: inline-block;
+    width: 100%;
+    cursor: pointer;
+}
+
+.imageX {
+    float: left;
+    background: #000;
+    width: 25%;
+    height: 130px
+}
+
+.content {
+    float: left;
+    height: 120px;
+    width: 73%;
+    overflow: hidden;
+    padding: 5px;
+}
+
+.content h4 {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+@media (max-width: 575px) {
+    .imageX {
+        height: 90px
+    }
+
+    .content {
+        height: 80px;
+    }
+}
+
+@media (max-width: 606px) {
+    .hide606 {
+        display: none !important;
+    }
+    .show606 {
+        display: block !important;
+    }
+}

@@ -1,0 +1,5 @@
+storage/books/*
+.env
+vendor/
+node_modules/
+libr.zip
