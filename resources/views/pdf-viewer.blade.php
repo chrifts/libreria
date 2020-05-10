@@ -21,6 +21,15 @@
     <script src="{{env("BASE_URL")}}/generic/build/pdf.js"></script>
     <script src="https://unpkg.com/interactjs/dist/interact.min.js"></script>
 </head>
+<style>
+    .no-btn {
+        cursor: default !important;
+    }
+    .pd145 {
+        padding-top: 180px !important;
+    }
+</style>
+
 <body>
  <div class="container-fluid">
     <div class="progress" id='div_progress'>
@@ -47,9 +56,20 @@
                     <button class='btn btn-secondary' id='mas90'>+90</button>
                 </div>
 
-                <div class="btn-group float-right" role="group" aria-label="Basic example">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button for="pages" class="btn btn-secondary no-btn" disabled>Página</button>
+                    <input type="number" id='pages' min='1' max='{{$theBook->total_pages}}' value="" style="width: 100px">
+                    <button class='btn btn-secondary' id='goto'>Ir</button>
+                </div>
+                
+                <div class="btn-group " role="group" aria-label="Basic example" id='maxPages' style="display: none;">
+                    <p class="alert alert-danger m-0" style="padding: 5px !important">Rango de páginas: 1 - {{$theBook->total_pages}}</p>
+                </div>
+
+                <div class="float-right" role="group" aria-label="Basic example">
                     @if($isLarge)
                         <button id='next_large' class="btn btn-primary">Siguiente</button>
+                        <button id='load_btn' class="btn btn-secondary" style="display: none" disabled>Aguarde</button>
                     @else
                         <button id='next' class="btn btn-primary">Siguiente</button>
                     @endif
@@ -59,7 +79,7 @@
             </div>
         </div>
     </div>
-    <div style="padding-top: 45px;"></div>
+    <div style="padding-top: 50px;" id='pd-book'></div>
     <div class="mx-auto border shadow" id='bookCont' style="width: 100%">
         <div id='holder' class="w-100" style="">
             <canvas id="the-canvas" class="w-100" style="display: none"></canvas>
@@ -77,12 +97,12 @@
 
     $('#mas90').on('click', function(){
         current_r = current_r + 90
-
+        $('#pd-book').toggleClass('pd145')
         $('#bookCont').attr('style', 'width: '+current_w+'%; transform: rotate('+current_r +'deg)')
     })
     $('#menos90').on('click', function(){
         current_r = current_r - 90
-
+        $('#pd-book').toggleClass('pd145')
         $('#bookCont').attr('style', 'width: '+current_w+'%; transform: rotate('+current_r +'deg)')
     })
 
@@ -105,10 +125,17 @@
         current_w = 200;
         $('#bookCont').attr('style', 'width: '+current_w+'%; transform: rotate('+current_r +'deg)')
     })
-
+    var totalPages = '{{$theBook->total_pages}}'
     var isLargeFile = parseInt('{{$isLarge}}');
+    isLargeFile == 1 ? window.isLargeFile = true : window.isLargeFile = false;
     var page = 1;
-
+    
+    function pageInput(page) {
+        $('#pages').val(0);
+        $('#pages').val(page);
+    }
+    pageInput(page);
+  
     (function addXhrProgressEvent($) {
         var originalXhr = $.ajaxSettings.xhr;
         $.ajaxSetup({
@@ -174,11 +201,12 @@
                 var loadingTask = pdfjsLib.getDocument({url: fileURL, password:x}, {disableAutoFetch: true, disableStream: true});
 
                 loadingTask.promise.then(function(pdf) {
-                    var pageN = page;
+                    
                     $('#next').on('click', function(){
                         $(window).scrollTop(0);
-                        pageN = pageN + 1;
-                        pdf.getPage(pageN).then(function(page) {
+                        page = page + 1;
+                        pageInput(page);
+                        pdf.getPage(page).then(function(page) {
                             var scale = 2;
                             var viewport = page.getViewport({ scale: scale, });
                             var canvas = document.getElementById('the-canvas');
@@ -192,6 +220,29 @@
                             page.render(renderContext);
                         });
                     })
+                    if(!window.isLargeFile) {
+                        $('#goto').on('click', function(){
+                            page = parseInt($('#pages').val());
+                            
+                            $(window).scrollTop(0);
+                            
+                            pageInput(page);
+                            pdf.getPage(page).then(function(page) {
+                                var scale = 2;
+                                var viewport = page.getViewport({ scale: scale, });
+                                var canvas = document.getElementById('the-canvas');
+                                var context = canvas.getContext('2d');
+                                canvas.height = viewport.height;
+                                //canvas.width = viewport.width;
+                                var renderContext = {
+                                    canvasContext: context,
+                                    viewport: viewport,
+                                };
+                                page.render(renderContext);
+                            });
+                        })
+                    }
+                    
                     pdf.getPage(1).then(function(page) {
                         var scale = 2;
                         var viewport = page.getViewport({ scale: scale, });
@@ -213,11 +264,44 @@
     }
 
     requestBook(page)
+    if(window.isLargeFile) {
+        $('#goto').on('click', function(){
+            
+            page = parseInt($('#pages').val());
+            if(page < 1 || page > totalPages) {
+                $('#maxPages').show();
+                setTimeout(function(){
+                    $('#maxPages').fadeOut(1000)
+                }, 3000);
+                return;
+            }
+            console.log(page);
+            pageInput(page);
+            $('#next_large').hide()
+            $('#load_btn').show()
+            $(window).scrollTop(0);
+            $('#the-canvas').empty();
+            requestBook(page);
+            setTimeout(function(){
+                $('#next_large').show()
+                $('#load_btn').hide()
+            }, 1500);
+        })
+    }  
+    
     $('#next_large').on('click', function(){
+        $(this).hide()
+        $('#load_btn').show()
         $(window).scrollTop(0);
         $('#the-canvas').empty();
-        page = page + 1;
+        page = page + 1
+        console.log(page)
         requestBook(page);
+        pageInput(page);
+        setTimeout(function(){
+            $('#next_large').show()
+            $('#load_btn').hide()
+        }, 1500);
     })
 
     $(window).bind('keydown', function(event) {

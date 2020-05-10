@@ -21,6 +21,7 @@ class CreatePdfsTable extends Migration
             $table->string('is_large_file');
             $table->string('internal_id')->unique();
             $table->string('path_to_folder')->nullable();
+            $table->string('total_pages');
             $table->timestamps();
         });
     }

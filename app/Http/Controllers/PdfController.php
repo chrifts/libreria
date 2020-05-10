@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Pdf;
+use Imagick;
 
 
 class PdfController extends Controller {
@@ -14,7 +15,8 @@ class PdfController extends Controller {
     public function pdf_viewer($book, $isLarge) {
         $book = $book;
         $isLarge = $isLarge;
-        return view('pdf-viewer', compact('book', 'isLarge'));
+        $theBook = Pdf::where('internal_id', $book)->first();
+        return view('pdf-viewer', compact('book', 'isLarge', 'theBook'));
     }
 
     public function form_pdf(Request $req) {
@@ -44,6 +46,8 @@ class PdfController extends Controller {
     public function post_pdf(Request $req) {
             $path_original = storage_path('books/');
             $client = new \GuzzleHttp\Client();
+            
+            
             $file = $req->file('theFile');
             $fileSize = $file->getSize();
             $pdf_db = new Pdf();
@@ -65,7 +69,6 @@ class PdfController extends Controller {
 
             if($fileSize > $mbx8) {
                 $res = $client->request('POST', $amazon, [
-                    'auth'      => [ '123', '123' ],
                     'multipart' => [
                         [
                             'name'     => 'theFile',
@@ -76,7 +79,17 @@ class PdfController extends Controller {
                     'sink' => $destinationPath .'/'. $req->ident . '.zip'
                 ]);
                 $this->unzip($req->ident . '.zip', $destinationPath);
+                $pages = [0 => null];
+                $files = glob(storage_path('books').'/'.$req->ident.'/encrypted*');
+                foreach($files as $file) {
+                    array_push($pages, $this->getStringBetween("filename:".$file."<br />", '_', '.'));
+                }
+                $pdf_db->total_pages = (count($pages) - 1);
+            } else {
+                $im = new Imagick($destinationPath.'/'.$req->ident.'.pdf');
+                $pdf_db->total_pages = $im->getNumberImages();
             }
+
             $pdf_db->save();
             return redirect()->back()->with('success', 'done');
 
@@ -92,6 +105,7 @@ class PdfController extends Controller {
         foreach($files as $file) {
             array_push($pages, $this->getStringBetween("filename:".$file."<br />", '_', '.'));
         }
+        
         return response()->file(storage_path('books').'/'.$book.'/encrypted_'.$pages[$page].'.pdf', ['Content-Type'=>'application/pdf']);
     }
 
