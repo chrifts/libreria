@@ -7,7 +7,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Seminario') }}</title>
+    <title>Biblioteca digital - Seminario Concordia</title>
+    <link rel="shortcut icon" href="/images/logo.png">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
@@ -25,13 +26,47 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
+    <link rel="stylesheet" href="{{ asset('css/cards.css') }}">
     <!-- Styles -->
     {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
 </head>
+<style>
+    .theLine {
+        position: relative; 
+        height: 0px; 
+        top: 82px;
+    }
+    
+    @media (max-width: 992px) {
+        .theLine {
+            top: 135px;
+        }
+    }
+    @media (max-width: 768px) {
+        .theLine {
+            top: 52px;
+        }
+    }
+    .the-bod {
+        position: relative; 
+        bottom: 85px;
+    }
+    .hdr {
+        margin-top: 20px;
+    }
+    @media (max-width: 768px) {
+        .the-bod {
+            bottom: 0px;
+        }
+        .hdr {
+            margin-top: 0px;
+        }
+    }
+</style>
 <body>
-    <div class="container-fluid mt-2">
-        <div label='header' id='_hdr'>
+    <div class="w-100 border-bottom theLine"></div>
+    <div class="container mt-2">
+        <div label='header' id='_hdr' class="hdr" >
             @section('sidebar')
                 @component('main.header')
 
@@ -39,7 +74,7 @@
             @show
         </div>
 
-        <div label='body'>
+        <div class="the-bod" label='body'>
             @yield('content')
         </div>
     </div>

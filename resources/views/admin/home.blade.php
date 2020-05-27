@@ -9,7 +9,7 @@
                   <a class="nav-link primary" href="subir_pdf">Subir pdf</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link primary" href="pdf_to_text">test pdf</a>
+                    <a class="nav-link primary" href="libros">Libros</a>
                   </li>
                 <li class="nav-item">
                   <a href="{{ URL::to('admin/add_admin') }}" class="nav-link">Agregar admin</a>

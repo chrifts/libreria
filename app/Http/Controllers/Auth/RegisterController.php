@@ -71,4 +71,9 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     }
+
+    public function reg_flow() {
+        $reg_flow = true;
+        return view('auth.register', compact('reg_flow'));
+    }
 }

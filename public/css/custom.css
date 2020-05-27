@@ -4,7 +4,7 @@
 .theTitle {
     width: 208px;
     position: relative;
-    top: 15px;
+    top: 43px;
 }
 
 .theCard {
@@ -51,4 +51,26 @@
     .show606 {
         display: block !important;
     }
+}
+
+
+@media (max-width: 575px) {
+    .theImg {
+        width: 75px;
+    }
+    .title-mob {
+        font-size: 18px;
+    }
+    .theTitle {
+        width: 165px;
+    }
+}
+
+.pdrt {
+    padding-top: 37px;
+    padding-right: 27px;
+}
+
+#sortdiv > label {
+    cursor: pointer;
 }

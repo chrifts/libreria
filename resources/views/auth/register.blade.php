@@ -1,12 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-3">
+<div class="mt-3">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Registrate</div>
-
+                @if(isset($reg_flow))
+                    <div class="card-header">Para poder leer <a href="{{env('BASE_URL')}}/login">inicie sesión</a> o registresé a continuación</div>  
+                @else
+                    <div class="card-header">Registrate</div>
+                @endif
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
@@ -58,6 +61,14 @@
 
                             <div class="col-md-6">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="card_pay" class="col-md-4 col-fo rm-label text-md-right">Tarjeta</label>
+
+                            <div class="col-md-6">
+                                <input id="card_pay" type="text" class="form-control" name="card" required>
                             </div>
                         </div>
 

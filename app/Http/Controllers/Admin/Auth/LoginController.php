@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +53,7 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect('/admin');
+        return redirect(env('BASE_URL').'/admin');
     }
 
     protected function guard()

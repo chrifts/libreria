@@ -15,7 +15,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+       // $this->middleware('auth');
     }
 
     /**
@@ -25,7 +25,28 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $lastBooks = Pdf::orderBy('created_at', 'desc')->take(10)->get();
-        return view('home', compact('lastBooks'));
+        $lastBooks = Pdf::orderBy('views', 'desc')->take(4)->get();
+        $recents = Pdf::orderBy('created_at', 'desc')->take(4)->get();
+        return view('home', compact('lastBooks', 'recents'));
+    }
+
+    public function index_all() {
+        $books = Pdf::all();
+        $books->makeHidden(['path_to_folder']);
+        $user = Auth::user();
+        $temas = HomeController::getTemas($books);
+        return view('allbooks', compact('books', 'user', 'temas'));
+    }
+
+    public static function getTemas($books) {
+        $temas = [];
+        foreach ($books as $bk) {
+            $book_themes = json_decode($bk->theme);
+            foreach($book_themes as $tm) {
+                array_push($temas, $tm);
+            }
+        }
+        $temas = array_unique($temas);
+        return $temas;
     }
 }

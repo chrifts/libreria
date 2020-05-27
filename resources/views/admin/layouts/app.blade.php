@@ -21,70 +21,49 @@
         <script src="{{ asset('js/app.js') }}" defer>
         <script src="{{ asset('js/bootstrap.js') }}" defer></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <!-- Fonts -->
+        
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
         
-        <!-- Styles -->
+        
         {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
     </head>
-    <style>
+    <body>
+        <div id="app" class="container-fluid">
+            <div class="row border-bottom mb-5">
+                <div class="col-md-12"> 
+                    <nav class="navbar navbar-default navbar-static-top">
+                        <a class="navbar-brand" href="{{ env('BASE_URL')}}/admin/home">
+                            Administración - Librería Seminario
+                        </a>
+                        @if (Auth::guard('admin')->check())
+                            <button type="button" class="btn navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
+                                Menu
+                            </button>
+                            <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li>
+                                        <a href="{{ URL::to('admin/add_admin') }}">Agregar admin</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('admin.logout') }}"
+                                            onclick="event.preventDefault();
+                                                    document.getElementById('logout-form').submit();">
+                                            Logout
+                                        </a>
 
-        @media (max-width: 575px) {
-            .theImg {
-                width: 75px;
-            }
-            .title-mob {
-                font-size: 18px;
-            }
-            .theTitle {
-                width: 165px;
-            }
-        }
-    
-        .pdrt {
-            padding-top: 37px;
-            padding-right: 27px;
-        }
-    
-    </style>
-<body>
-
-    <div id="app" class="container-fluid">
-        <div class="row border-bottom mb-5">
-            <div class="col-md-12"> 
-                <nav class="navbar navbar-default navbar-static-top">
-                    <a class="navbar-brand" href="{{ env('BASE_URL') . url('/admin') }}">
-                        Administración - Libreria Seminario
-                    </a>
-                    @if (Auth::guard('admin')->check())
-                        <button type="button" class="btn navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-                            Menu
-                        </button>
-                        <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                            <ul class="nav navbar-nav navbar-right">
-                                <li>
-                                    <a href="{{ URL::to('admin/add_admin') }}">Agregar admin</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.logout') }}"
-                                        onclick="event.preventDefault();
-                                                document.getElementById('logout-form').submit();">
-                                        Logout
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
-                                        {{ csrf_field() }}
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    @endif
-                    
-                </nav>
+                                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                                            {{ csrf_field() }}
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @endif
+                        
+                    </nav>
+                </div>
             </div>
+            @yield('content')
         </div>
-        @yield('content')
-    </div>
-</body>
+    </body>
 </html>

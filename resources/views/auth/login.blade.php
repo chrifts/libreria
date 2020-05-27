@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-3">
+<div class="mt-3">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -58,7 +58,7 @@
                                 </button>
 
                                 @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ env('BASE_URL') }}/password/resetr">
+                                    <a class="btn btn-link" href="{{ env('BASE_URL') }}/password/reset">
                                         Olvidaste tu contraseña?
                                     </a>
                                 @endif

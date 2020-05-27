@@ -63,6 +63,7 @@ create table `pdfs` (
   `is_large_file` varchar(255) not null, 
   `internal_id` varchar(255) not null, 
   `path_to_folder` varchar(255) null, 
+  `total_pages` varchar(255) not null, 
   `created_at` timestamp null, 
   `updated_at` timestamp null
 ) default character set utf8mb4 collate 'utf8mb4_unicode_ci' engine = InnoDB;

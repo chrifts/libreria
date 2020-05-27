@@ -206,6 +206,11 @@
                         $(window).scrollTop(0);
                         page = page + 1;
                         pageInput(page);
+                        if(page == totalPages) {
+                            $(this).hide();
+                        } else {
+                            $(this).show();
+                        }
                         pdf.getPage(page).then(function(page) {
                             var scale = 2;
                             var viewport = page.getViewport({ scale: scale, });
@@ -223,7 +228,18 @@
                     if(!window.isLargeFile) {
                         $('#goto').on('click', function(){
                             page = parseInt($('#pages').val());
-                            
+                            if(page == totalPages) {
+                                $('#next').hide();
+                            } else {
+                                $('#next').show();
+                            }
+                            if(page < 1 || page > totalPages) {
+                                $('#maxPages').show();
+                                setTimeout(function(){
+                                    $('#maxPages').fadeOut(1000)
+                                }, 3000);
+                                return;
+                            }
                             $(window).scrollTop(0);
                             
                             pageInput(page);
@@ -266,8 +282,14 @@
     requestBook(page)
     if(window.isLargeFile) {
         $('#goto').on('click', function(){
-            
             page = parseInt($('#pages').val());
+            if(page == totalPages) {
+                
+                $('#next_large').hide();
+            } else {
+                
+                $('#next_large').show();
+            }
             if(page < 1 || page > totalPages) {
                 $('#maxPages').show();
                 setTimeout(function(){
@@ -288,8 +310,23 @@
             }, 1500);
         })
     }  
+
+    $('#pages').on('keyup', function(){
+        if($(this).val() > totalPages || $(this).val() < 1 ) {
+            $('#next').hide()
+            $('#next_large').hide()
+        } else {
+            $('#next').show()
+            $('#next_large').show()
+        }
+    })
     
     $('#next_large').on('click', function(){
+        if(page == totalPages) {
+            $(this).hide();
+        } else {
+            $(this).show();
+        }
         $(this).hide()
         $('#load_btn').show()
         $(window).scrollTop(0);

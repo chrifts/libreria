@@ -19,7 +19,7 @@ class CheckIfAdminAuthenticated
     {
         $auth=Auth::guard('admins');
         if (!$auth->check()) {
-            return redirect('/admin');
+            return redirect('/admin/home');
         }
 
         return $next($request);
